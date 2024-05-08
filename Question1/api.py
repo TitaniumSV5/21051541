@@ -10,11 +10,12 @@ def fetch_top_products(categoryname, n, min_price, max_price, page):
         'top': n,
         'minPrice': min_price,
         'maxPrice': max_price,
+        'page': page
     }
     response = requests.get(url, params=params)
     if response.status_code == 200:
         products = response.json()
-        # Generate unique identifiers for each product
+        # Generating unique identifiers for each product
         for product in products:
             product['id'] = str(uuid.uuid4())
         return products
@@ -22,6 +23,7 @@ def fetch_top_products(categoryname, n, min_price, max_price, page):
         return []  
 
 def fetch_product_details(categoryname, productid):
+    # Fetching product details 
     pass
 
 @app.route('/categories/<categoryname>/products', methods=['GET'])
@@ -30,15 +32,16 @@ def get_top_products(categoryname):
     n = int(request.args.get('top', 10))
     min_price = float(request.args.get('minPrice', 0))
     max_price = float(request.args.get('maxPrice', float('inf')))
+    page = int(request.args.get('page', 1))
 
-    # Fetch top products 
+    # Fetching top products
     products = fetch_top_products(categoryname, n, min_price, max_price, page)
 
     return jsonify(products)
 
 @app.route('/categories/<categoryname>/products/<productid>', methods=['GET'])
 def get_product_details(categoryname, productid):
-    # Fetch product details 
+    # Fetching product details 
     product_details = fetch_product_details(categoryname, productid)
     if product_details:
         return jsonify(product_details)
